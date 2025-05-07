@@ -1,4 +1,14 @@
-import { YoutubeTranscript } from "youtube-transcript";
+// lib/fetchTranscript.ts
+import { Innertube } from "youtubei.js";
+
+let youtubeClient: Innertube | null = null;
+
+async function getYouTubeClient() {
+  if (!youtubeClient) {
+    youtubeClient = await Innertube.create({ lang: "en", location: "US" });
+  }
+  return youtubeClient;
+}
 
 export async function fetchTranscript(url: string): Promise<string> {
   try {
@@ -8,17 +18,21 @@ export async function fetchTranscript(url: string): Promise<string> {
       return "Transcript not available.";
     }
 
-    const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+    const youtube = await getYouTubeClient();
+    const info = await youtube.getInfo(videoId);
+    const transcriptData = await info.getTranscript();
 
-    if (!transcript || transcript.length === 0) {
-      console.error("No transcript entries found.");
+    if (!transcriptData?.transcript?.content?.body?.initial_segments) {
       return "Transcript not available.";
     }
 
-    const fullText = transcript.map((entry) => entry.text).join(" ");
-    return fullText;
+    const lines = transcriptData.transcript.content.body.initial_segments.map(
+      (segment) => segment.snippet.text
+    );
+
+    return lines.join(" ").trim();
   } catch (error) {
-    console.error("Transcript error:", error);
+    console.error("Innertube Transcript Error:", error);
     return "Transcript not available.";
   }
 }

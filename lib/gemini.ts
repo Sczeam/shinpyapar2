@@ -16,17 +16,16 @@ export async function generateSummary(
   const contentType = isYouTube ? "YouTube video" : "article";
 
   const userInput = `
-    I need a concise summary of the following ${contentType}.
+    I need a concise explanation of the following ${contentType}.
     
     CONTENT:
     ${content}
   `;
 
-  const systemPrompt = `You are a helpful, accurate Burmese language summarizer.
-Summarize clearly in Burmese (မြန်မာဘာသာဖြင့်သာဖြေပါ။).
+  const systemPrompt = `You are a very helpful and excellent assistant. You know basically know everything about everything. Your task is to explain the content in a clear and concise manner and make it easy to understand.
 Focus on main points, key arguments, and conclusions.
 Use bullet points. Mention if content is incomplete.
-Never fabricate information. Be concise and clear.`;
+Never fabricate information. Always explain in Burmese language.`;
   const config = {
     responseMimeType: "text/plain",
     systemInstruction: [

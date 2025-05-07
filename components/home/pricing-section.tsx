@@ -103,7 +103,7 @@ export default function PricingSection() {
               <p className="text-primary-foreground/80">For power users</p>
             </div>
             <div className="mb-6">
-              <span className="text-4xl font-bold">$5</span>
+              <span className="text-4xl font-bold">MMK 10000</span>
               <span className="text-primary-foreground/80">/month</span>
             </div>
             <ul className="space-y-3 mb-8">

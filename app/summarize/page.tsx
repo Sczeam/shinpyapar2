@@ -7,27 +7,39 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
-import { 
-  Sparkles, 
-  Copy, 
-  Check, 
+import {
+  Sparkles,
+  Copy,
+  Check,
   Link as LinkIcon,
-  FileText, 
-  Youtube, 
-  Loader2 
+  FileText,
+  Youtube,
+  Loader2,
 } from "lucide-react";
 
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   url: z.string().url("Please enter a valid URL"),
@@ -41,7 +53,9 @@ export default function SummarizePage() {
   const [copied, setCopied] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [contentType, setContentType] = useState<"article" | "youtube">("article");
+  const [contentType, setContentType] = useState<"article" | "youtube">(
+    "article"
+  );
   const { isSignedIn } = useUser();
   const { toast } = useToast();
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -64,20 +78,26 @@ export default function SummarizePage() {
       });
 
       setSummary(data.summary);
-      
+
       // Detect content type based on URL
-      if (values.url.includes("youtube.com") || values.url.includes("youtu.be")) {
+      if (
+        values.url.includes("youtube.com") ||
+        values.url.includes("youtu.be")
+      ) {
         setContentType("youtube");
       } else {
         setContentType("article");
       }
     } catch (err: any) {
       console.error(err);
-      
+
       if (err?.response?.data?.limitReached) {
         setIsDialogOpen(true);
       } else {
-        setError(err?.response?.data?.error || "Something went wrong. Please try again.");
+        setError(
+          err?.response?.data?.error ||
+            "Something went wrong. Please try again."
+        );
       }
     } finally {
       setLoading(false);
@@ -88,12 +108,12 @@ export default function SummarizePage() {
     if (summaryRef.current) {
       navigator.clipboard.writeText(summaryRef.current.innerText);
       setCopied(true);
-      
+
       toast({
         title: "Copied to clipboard",
         description: "Summary has been copied to clipboard",
       });
-      
+
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -105,7 +125,7 @@ export default function SummarizePage() {
 
   const copyKPayNumber = () => {
     navigator.clipboard.writeText(kpayDetails.phone);
-    
+
     toast({
       title: "Copied to clipboard",
       description: "KPay number has been copied to clipboard",
@@ -115,7 +135,7 @@ export default function SummarizePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -143,7 +163,10 @@ export default function SummarizePage() {
                 </TabsList>
                 <TabsContent value="url">
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6"
+                    >
                       <FormField
                         control={form.control}
                         name="url"
@@ -157,8 +180,8 @@ export default function SummarizePage() {
                                   className="rounded-r-none"
                                   disabled={loading}
                                 />
-                                <Button 
-                                  type="submit" 
+                                <Button
+                                  type="submit"
                                   className="rounded-l-none"
                                   disabled={loading}
                                 >
@@ -208,10 +231,7 @@ export default function SummarizePage() {
                   >
                     <div className="relative">
                       <div className="absolute top-3 right-3 flex space-x-2">
-                        <Badge 
-                          variant="outline" 
-                          className="bg-background"
-                        >
+                        <Badge variant="outline" className="bg-background">
                           {contentType === "youtube" ? (
                             <Youtube className="h-3 w-3 mr-1" />
                           ) : (
@@ -232,7 +252,7 @@ export default function SummarizePage() {
                           )}
                         </Button>
                       </div>
-                      <div 
+                      <div
                         className="p-6 bg-primary/5 rounded-lg whitespace-pre-line text-foreground"
                         ref={summaryRef}
                       >
@@ -255,7 +275,8 @@ export default function SummarizePage() {
           <DialogHeader>
             <DialogTitle>Upgrade to Pro Plan</DialogTitle>
             <DialogDescription>
-              You've reached the free usage limit. Upgrade to Pro for unlimited summaries.
+              You&#39;ve reached the free usage limit. Upgrade to Pro for
+              unlimited summaries.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6 py-4">
@@ -274,11 +295,7 @@ export default function SummarizePage() {
                   <p className="text-sm font-medium">KPay Number</p>
                   <p className="text-lg">{kpayDetails.phone}</p>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  onClick={copyKPayNumber}
-                >
+                <Button variant="outline" size="icon" onClick={copyKPayNumber}>
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
@@ -289,9 +306,9 @@ export default function SummarizePage() {
             </div>
             <div>
               <Button asChild className="w-full">
-                <a 
-                  href="https://m.me/shinpyapr" 
-                  target="_blank" 
+                <a
+                  href="https://m.me/shinpyapr"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center"
                 >
